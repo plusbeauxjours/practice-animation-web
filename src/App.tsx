@@ -61,6 +61,9 @@ function App() {
   return (
     <Wrapper>
       <Box variants={boxVariants} initial="_start" animate="_end">
+        {/* initial & animate를 넣지 않는 이유는 아래와같이 default로 상속이 되어있기 때문이다. 
+        _start, _end 변수명을 같게, 내용은 다르게해서 실행시키도록 한다. 
+        <Circle variants={circleVariants} initial="_start" animate="_end"/>   */}
         <Circle variants={circleVariants} />
         <Circle variants={circleVariants} />
         <Circle variants={circleVariants} />
