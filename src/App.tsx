@@ -40,6 +40,9 @@ function App() {
       <BiggerBox ref={biggerBoxRef}>
         <Box
           drag
+          // dragConstraints={biggerBoxRef}
+          dragSnapToOrigin // 박스가 아니라 init xy로 돌아온다
+          dragElastic={0.5}
           variants={boxVariants}
           whileHover="hover"
           whileDrag="drag"
