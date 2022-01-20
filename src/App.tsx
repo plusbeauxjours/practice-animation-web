@@ -48,6 +48,8 @@ function App() {
   return (
     <Wrapper>
       <Grid>
+        {/* box를 클릭하였을 때 box의 index를 state에 저장해서
+        모달로 띄우는 layoutId와 일치 시켜 에니메이션을 일으킨다. */}
         {["1", "2", "3", "4"].map((n) => (
           <Box onClick={() => setId(n)} key={n} layoutId={n} />
         ))}
