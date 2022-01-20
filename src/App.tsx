@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 
-const Wrapper = styled(motion.div)`
+const Wrapper = styled.div`
   height: 100vh;
   width: 100vw;
   display: flex;
@@ -10,44 +10,61 @@ const Wrapper = styled(motion.div)`
   align-items: center;
 `;
 
+const Grid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 50vw;
+  gap: 10px;
+  div:first-child,
+  div:last-child {
+    grid-column: span 2;
+  }
+`;
+
 const Box = styled(motion.div)`
-  width: 400px;
-  height: 400px;
   background-color: rgba(255, 255, 255, 1);
   border-radius: 40px;
+  height: 200px;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.06);
+`;
+
+const Overlay = styled(motion.div)`
+  width: 100%;
+  height: 100%;
+  position: absolute;
   display: flex;
   justify-content: center;
   align-items: center;
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.06);
 `;
 
-const Circle = styled(motion.div)`
-  background-color: #00a5ff;
-  height: 100px;
-  width: 100px;
-  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.06);
-`;
-
+const overlay = {
+  hidden: { backgroundColor: "rgba(0, 0, 0, 0)" },
+  visible: { backgroundColor: "rgba(0, 0, 0, 0.5)" },
+  exit: { backgroundColor: "rgba(0, 0, 0, 0)" },
+};
 function App() {
-  const [isClicked, setIsClicked] = useState(false);
-  const toggleClicked = () => setIsClicked((prev) => !prev);
+  const [id, setId] = useState<null | string>(null);
   return (
-    <Wrapper onClick={toggleClicked}>
-      <Box>
-        {/* element의 layout이 바뀔 때 알아서 animate가 된다. 
-            layout을 넣으면 무언가 외부의 힘에 의해 바뀐것을 감지한다. 
-            layoutId을 넣어서 두개의 component가 연결되어있다고 알려준다.
-            두개의 다른 component가 같다고 생각하기 때문에 에니메이션이 된다.
-        */}
-        {!isClicked ? (
-          <Circle layoutId="_circle" style={{ borderRadius: 50 }} />
+    <Wrapper>
+      <Grid>
+        {["1", "2", "3", "4"].map((n) => (
+          <Box onClick={() => setId(n)} key={n} layoutId={n} />
+        ))}
+      </Grid>
+      <AnimatePresence>
+        {id ? (
+          <Overlay
+            variants={overlay}
+            onClick={() => setId(null)}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+          >
+            <Box layoutId={id} style={{ width: 400, height: 200 }} />
+          </Overlay>
         ) : null}
-      </Box>
-      <Box>
-        {isClicked ? (
-          <Circle layoutId="_circle" style={{ borderRadius: 0, scale: 2 }} />
-        ) : null}
-      </Box>
+      </AnimatePresence>
     </Wrapper>
   );
 }
