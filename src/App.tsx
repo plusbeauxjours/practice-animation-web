@@ -26,11 +26,11 @@ const Box = styled(motion.div)`
 `;
 
 const box = {
-  _invisible: {
-    x: 500,
+  _invisible: (isBack: boolean) => ({
+    x: isBack ? -500 : 500,
     opacity: 0,
     scale: 0,
-  },
+  }),
   _animate: {
     x: 0,
     opacity: 1,
@@ -39,38 +39,41 @@ const box = {
       duration: 1,
     },
   },
-  _exit: {
-    x: -500,
+  _exit: (isBack: boolean) => ({
+    x: isBack ? 500 : -500,
     opacity: 0,
     scale: 0,
-    transition: { duration: 1 },
-  },
+    transition: {
+      duration: 1,
+    },
+  }),
 };
 
 function App() {
   const [visible, setVisible] = useState(1);
-  const nextPlease = () => setVisible((prev) => (prev === 10 ? 10 : prev + 1));
-  const prevPlease = () => setVisible((prev) => (prev === 1 ? 1 : prev - 1));
+  const [isBack, setIsBack] = useState(false);
+  const nextPlease = () => {
+    setIsBack(false);
+    setVisible((prev) => (prev === 10 ? 10 : prev + 1));
+  };
+  const prevPlease = () => {
+    setIsBack(true);
+    setVisible((prev) => (prev === 1 ? 1 : prev - 1));
+  };
   return (
     <Wrapper>
-      {/* AnimatePresence는 한상 visible상태가 되어있어야하고, 
-      그 안의 children만 condition을 가지고 있어야한다.  
-      initial => animate => exit
-      */}
-      <AnimatePresence>
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) =>
-          i === visible ? (
-            <Box
-              variants={box}
-              initial="_invisible"
-              animate="_animate"
-              exit="_exit"
-              key={i}
-            >
-              {i}
-            </Box>
-          ) : null
-        )}
+      {/* custom은 변수를 받아서 variants에 전달한다. */}
+      <AnimatePresence custom={isBack}>
+        <Box
+          custom={isBack}
+          variants={box}
+          initial="_invisible"
+          animate="_animate"
+          exit="_exit"
+          key={visible}
+        >
+          {visible}
+        </Box>
       </AnimatePresence>
       <button onClick={nextPlease}>next</button>
       <button onClick={prevPlease}>prev</button>
